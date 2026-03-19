@@ -1,5 +1,6 @@
 using Library.Domain;
 using library.MVC.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -7,16 +8,19 @@ namespace library.MVC.Controllers;
 
 public class MembersController(ApplicationDbContext context) : Controller
 {
+    [AllowAnonymous]
     public async Task<IActionResult> Index()
     {
         return View(await context.Members.OrderBy(m => m.FullName).ToListAsync());
     }
 
+    [Authorize(Roles = "Admin")]
     public IActionResult Create()
     {
         return View();
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(Member member)
@@ -31,6 +35,7 @@ public class MembersController(ApplicationDbContext context) : Controller
         return RedirectToAction(nameof(Index));
     }
 
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Edit(int? id)
     {
         if (id is null)
@@ -47,6 +52,7 @@ public class MembersController(ApplicationDbContext context) : Controller
         return View(member);
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(int id, Member member)
@@ -66,6 +72,7 @@ public class MembersController(ApplicationDbContext context) : Controller
         return RedirectToAction(nameof(Index));
     }
 
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Delete(int? id)
     {
         if (id is null)
@@ -82,6 +89,7 @@ public class MembersController(ApplicationDbContext context) : Controller
         return View(member);
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(int id)

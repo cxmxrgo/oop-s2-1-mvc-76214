@@ -1,6 +1,7 @@
 using Library.Domain;
 using library.MVC.Data;
 using library.MVC.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,6 +9,7 @@ namespace library.MVC.Controllers;
 
 public class BooksController(ApplicationDbContext context) : Controller
 {
+    [AllowAnonymous]
     public async Task<IActionResult> Index(string? searchTerm, string? category, string availability = "All")
     {
         var booksQuery = context.Books.AsQueryable();
@@ -48,11 +50,13 @@ public class BooksController(ApplicationDbContext context) : Controller
         return View(model);
     }
 
+    [Authorize(Roles = "Admin")]
     public IActionResult Create()
     {
         return View();
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(Book book)
@@ -67,6 +71,7 @@ public class BooksController(ApplicationDbContext context) : Controller
         return RedirectToAction(nameof(Index));
     }
 
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Edit(int? id)
     {
         if (id is null)
@@ -83,6 +88,7 @@ public class BooksController(ApplicationDbContext context) : Controller
         return View(book);
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(int id, Book book)
@@ -102,6 +108,7 @@ public class BooksController(ApplicationDbContext context) : Controller
         return RedirectToAction(nameof(Index));
     }
 
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Delete(int? id)
     {
         if (id is null)
@@ -118,6 +125,7 @@ public class BooksController(ApplicationDbContext context) : Controller
         return View(book);
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(int id)

@@ -31,9 +31,12 @@
     </div>
 </form>
 
-<p>
-    <a asp-action="Create" class="btn btn-success">Create Book</a>
-</p>
+@if (User.IsInRole("Admin"))
+{
+    <p>
+        <a asp-action="Create" class="btn btn-success">Create Book</a>
+    </p>
+}
 
 <table class="table table-striped">
     <thead>
@@ -56,8 +59,12 @@
             <td>@item.Category</td>
             <td>@(item.IsAvailable ? "Available" : "On loan")</td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                @if (User.IsInRole("Admin"))
+                {
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                    <text> | </text>
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                }
             </td>
         </tr>
     }

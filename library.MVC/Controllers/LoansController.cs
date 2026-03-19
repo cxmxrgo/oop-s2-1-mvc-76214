@@ -1,6 +1,7 @@
 using Library.Domain;
 using library.MVC.Data;
 using library.MVC.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +10,7 @@ namespace library.MVC.Controllers;
 
 public class LoansController(ApplicationDbContext context) : Controller
 {
+    [AllowAnonymous]
     public async Task<IActionResult> Index()
     {
         var loans = await context.Loans
@@ -20,6 +22,7 @@ public class LoansController(ApplicationDbContext context) : Controller
         return View(loans);
     }
 
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Create()
     {
         var model = new LoanCreateViewModel();
@@ -27,6 +30,7 @@ public class LoansController(ApplicationDbContext context) : Controller
         return View(model);
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(LoanCreateViewModel model)
@@ -71,6 +75,7 @@ public class LoansController(ApplicationDbContext context) : Controller
         return RedirectToAction(nameof(Index));
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> MarkReturned(int id)

@@ -14,7 +14,7 @@ public static class DbSeeder
         var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
         var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
-        await context.Database.EnsureCreatedAsync();
+        await context.Database.MigrateAsync();
 
         await SeedAdminAsync(roleManager, userManager);
         await SeedLibraryDataAsync(context);
@@ -24,7 +24,7 @@ public static class DbSeeder
     {
         const string adminRole = "Admin";
         const string adminEmail = "admin@test.com";
-        const string adminPassword = "Admin123!";
+        const string adminPassword = "Letmein123!";
 
         if (!await roleManager.RoleExistsAsync(adminRole))
         {
@@ -42,6 +42,11 @@ public static class DbSeeder
             };
 
             await userManager.CreateAsync(adminUser, adminPassword);
+        }
+        else
+        {
+            var resetToken = await userManager.GeneratePasswordResetTokenAsync(adminUser);
+            await userManager.ResetPasswordAsync(adminUser, resetToken, adminPassword);
         }
 
         if (!await userManager.IsInRoleAsync(adminUser, adminRole))

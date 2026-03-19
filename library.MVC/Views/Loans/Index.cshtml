@@ -6,9 +6,12 @@
 
 <h1>Loans</h1>
 
-<p>
-    <a asp-action="Create" class="btn btn-success">Create Loan</a>
-</p>
+@if (User.IsInRole("Admin"))
+{
+    <p>
+        <a asp-action="Create" class="btn btn-success">Create Loan</a>
+    </p>
+}
 
 <table class="table table-striped">
     <thead>
@@ -47,7 +50,7 @@
                 }
             </td>
             <td>
-                @if (item.ReturnedDate == null)
+                @if (item.ReturnedDate == null && User.IsInRole("Admin"))
                 {
                     <form asp-action="MarkReturned" method="post" class="d-inline">
                         @Html.AntiForgeryToken()
