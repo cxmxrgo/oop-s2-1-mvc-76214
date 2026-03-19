@@ -78,6 +78,8 @@ public static class DbSeeder
             .RuleFor(m => m.Phone, f => f.Phone.PhoneNumber())
             .Generate(10);
 
+        // TEST
+
         context.Books.AddRange(books);
         context.Members.AddRange(members);
         await context.SaveChangesAsync();
